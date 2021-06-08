@@ -32,25 +32,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(async (req, res, next) => {
   req.db = knex;
-  await req.db.schema.hasTable('users').then(tableExists => {
-    if(!tableExists){
-      req.db.schema.createTable('users', table => {
-        table.increments('id').notNullable().primary();
-        table.string('email').unique();
-        table.string('password');
-        table.string('firstName');
-        table.string('lastName');
-        table.string('dob');
-        table.string('address');
-      }).then(TResult => {
-        console.log("table successfully created");
-      }).catch(reason => {
-        if(reason){
-          console.error(reason);
-        }
-      })
-    }
-  }) 
+  // await req.db.schema.hasTable('users').then(tableExists => {
+  //   if(!tableExists){
+  //     req.db.schema.createTable('users', table => {
+  //       table.increments('id').notNullable().primary();
+  //       table.string('email').unique();
+  //       table.string('password');
+  //       table.string('firstName');
+  //       table.string('lastName');
+  //       table.string('dob');
+  //       table.string('address');
+  //     }).then(TResult => {
+  //       console.log("table successfully created");
+  //     }).catch(reason => {
+  //       if(reason){
+  //         console.error(reason);
+  //       }
+  //     })
+  //   }
+  // }) 
   next();
 });
 

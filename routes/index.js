@@ -11,13 +11,4 @@ const swaggerDocument = require('../docs/openapi.json');
 router.use('/', swaggerUI.serve);
 router.get('/', swaggerUI.setup(swaggerDocument))
 
-router.get('/knex', (req, res, next) => {
-  req.db.raw("SELECT * from city").then(
-    (version) => console.log((version[0][0]))
-  ).catch(err => {
-    if(err){console.log(err); throw error}
-  })
-  res.send("version logged successfully");
-})
-
 module.exports = router;

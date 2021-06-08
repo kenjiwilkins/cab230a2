@@ -11,6 +11,10 @@ router.get("/", (req, res) => {
   }
   req.db.from("rankings").select('*').then((rows) => {
     return res.status(200).send(countryFormatter(rows))
+  }).catch(err => {
+    if(err){
+      console.log(err)
+    }
   })
 })
 

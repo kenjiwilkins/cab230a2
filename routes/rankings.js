@@ -28,16 +28,23 @@ router.get('/', (req, res) => {
       })
     }
   }
-  const query = req.query.map(q => {
-    return {}
-  })
-  req.db.raw(rankingQuery(req.query)).then(rankings => {
-    return res.status(200).send(rankingFormatter(rankings));
-  }).catch(err => {
-    if(err){
-      console.log(err);
-    }
-  })
+  if(req.query.year && !req.query.country){
+    req.db.from("rankings").where({year:req.query.year}).then((rows) => {
+      return res.status(200).send(rankingFormatter(rows))
+    })
+  } else if(!req.query.year && req.query.country){
+    req.db.from("rankings").where({country:req.query.country}).then((rows) => {
+      return res.status(200).send(rankingFormatter(rows))
+    })
+  } else if (req.query.year && req.query.country){
+    req.db.from("rankings").where({year:req.query.year, country:req.query.country}).then((rows) => {
+      return res.status(200).send(rankingFormatter(rows))
+    })
+  } else {
+    req.db.from("rankings").select('*').then((rows) => {
+      return res.status(200).send(rankingFormatter(rows))
+    })
+  }
 });
 
 

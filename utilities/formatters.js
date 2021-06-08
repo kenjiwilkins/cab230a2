@@ -1,6 +1,6 @@
 //return formatted ranking array
 function formatRankings(rankings){
-  return rankings[0].map(ranking => {
+  return rankings.map(ranking => {
     return {
       rank:ranking.rank,
       country:ranking.country,
