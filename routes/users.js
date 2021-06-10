@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const moment = require('moment');
 const hashPassword = require('../utilities/encryption').hashPassword;
 const checkPassword = require('../utilities/encryption').checkPassword;
 const createToken = require ('../utilities/jwt').createToken;
@@ -68,6 +69,11 @@ router.post("/login", async (req, res) => {
             })
           }
         })
+      } else {
+        return res.status(401).json({
+          "error": true,
+          "message": "Incorrect email or password"
+        })
       }
     })
   })
@@ -82,7 +88,11 @@ router.get('/:email/profile', (req, res) => {
           "message":"User not found"
         })
       }
-      return res.send(formatProfileWhenAuth(result))
+      if(req.user === req.params.email){
+        return res.send(formatProfileWhenAuth(result))
+      } else {
+        res.send(formatProfileNoAuth(result))
+      }
     })
   } else {
     req.db.from('users').where({email:req.params.email}).first().then(result => {
@@ -98,6 +108,7 @@ router.get('/:email/profile', (req, res) => {
 })
 
 router.put('/:email/profile', (req, res) => {
+  const isNumber = /^\d+$/;
   if(!req.headers.authorization){
     return res.status(401).json({
       "error": true,
@@ -107,6 +118,31 @@ router.put('/:email/profile', (req, res) => {
   if(req.user){
     if(req.user === req.params.email){
       if(req.body.firstName && req.body.lastName && req.body.dob && req.body.address){
+        if(!isNaN(parseInt(req.body.firstName)) || !isNaN(parseInt(req.body.lastName)) || typeof req.body.address !== 'string'){
+          return res.status(400).json({
+            "error":true,
+            "message": "Request body invalid, firstName, lastName and address must be strings only."
+          })
+        }
+        if(!req.body.dob.match(/^\d{4}-\d{2}-\d{2}$/)){
+          return res.status(400).json({
+            "error":true,
+            "message": "Invalid input: dob must be a real date in format YYYY-MM-DD."
+          })
+        }
+        
+        if(!moment(req.body.dob).isValid()){
+          return res.status(400).json({
+            "error":true,
+            "message": "Invalid input: dob must be a real date in format YYYY-MM-DD."
+          })
+        }
+        if(!moment(req.body.dob).isBefore(moment())){
+          return res.status(400).json({
+            "error":true,
+            "message": "Invalid input: dob must be a date in the past."
+          })
+        }
         req.db.from("users").update({
           firstName:req.body.firstName,
           lastName:req.body.lastName,

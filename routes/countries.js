@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
       "message": "Invalid query parameters: year. Query parameters are not permitted."
     })
   }
-  req.db.from("rankings").select('*').then((rows) => {
+  req.db.distinct().from("rankings").select('country').orderBy('country', 'asc').then((rows) => {
     return res.status(200).send(countryFormatter(rows))
   }).catch(err => {
     if(err){

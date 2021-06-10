@@ -37,7 +37,7 @@ function verifyToken(req, res, next){
     } else {
       return res.status(401).json({
         "error": true,
-        "message": "Authorization header ('Bearer token') not found"
+        "message": "Authorization header is malformed"
       })
     }
   } 
