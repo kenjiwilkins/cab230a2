@@ -1,4 +1,3 @@
-const e = require('express');
 const jwt = require('jsonwebtoken');
 
 const secret = "I really want to pass this subject"
@@ -7,6 +6,7 @@ function createToken(email){
   return jwt.sign({email:email}, secret, {expiresIn: 60 * 60 * 24})
 }
 
+// this JWT token checker is used for /factors endpoint
 function verifyToken(req, res, next){
   if(!req.headers.authorization){
     return res.status(401).json({
@@ -42,7 +42,7 @@ function verifyToken(req, res, next){
     }
   } 
 
-
+// this JWT token chekcer is used for /user/email/ endpoints
 async function authChecker(req, res, next){
   if(!req.headers.authorization){
     return next();

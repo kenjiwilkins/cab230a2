@@ -34,6 +34,7 @@ function formatFactors(rankings){
   })
 }
 
+//return formatted factors array
 function formatProfileNoAuth(user){
   return {
     email:user.email,
@@ -42,6 +43,8 @@ function formatProfileNoAuth(user){
   }
 }
 
+
+//return formatted factors array when authorised
 function formatProfileWhenAuth(user){
   return {
     email:user.email,

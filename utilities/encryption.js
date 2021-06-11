@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const e = require('express');
 
+// used in /user/login and /user/register endpoints
+
 async function hashPassword(password){
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 10, (error, hash) => {

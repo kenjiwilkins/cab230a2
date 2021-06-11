@@ -1,3 +1,5 @@
+// legacy funtion before understand how to use knex
+
 function queryForRankings(query){
   let dbquery = "SELECT * from rankings"
   let yearQuery = " year = "

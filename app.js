@@ -1,4 +1,3 @@
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -9,8 +8,6 @@ const options = require('./knexfile');
 const knex = require('knex')(options);
 const verifyToken = require('./utilities/jwt').verifyToken;
 const authChecker = require('./utilities/jwt').authChecker;
-const swaggerUI = require('swagger-ui-express');
-const swaggerDocument = require('./docs/openapi.json');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -23,7 +20,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 
-
+// express middlewear settings
 app.use(helmet());
 app.use(cors());
 app.use(logger('dev'));
@@ -32,30 +29,32 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// middlewear for knex plus create users db if it does not exist
 app.use(async (req, res, next) => {
   req.db = knex;
-  // await req.db.schema.hasTable('users').then(tableExists => {
-  //   if(!tableExists){
-  //     req.db.schema.createTable('users', table => {
-  //       table.increments('id').notNullable().primary();
-  //       table.string('email').unique();
-  //       table.string('password');
-  //       table.string('firstName');
-  //       table.string('lastName');
-  //       table.string('dob');
-  //       table.string('address');
-  //     }).then(TResult => {
-  //       console.log("table successfully created");
-  //     }).catch(reason => {
-  //       if(reason){
-  //         console.error(reason);
-  //       }
-  //     })
-  //   }
-  // }) 
+  await req.db.schema.hasTable('users').then(tableExists => {
+    if(!tableExists){
+      req.db.schema.createTable('users', table => {
+        table.increments('id').notNullable().primary();
+        table.string('email').unique();
+        table.string('password');
+        table.string('firstName');
+        table.string('lastName');
+        table.string('dob');
+        table.string('address');
+      }).then(TResult => {
+        console.log("table successfully created");
+      }).catch(reason => {
+        if(reason){
+          console.error(reason);
+        }
+      })
+    }
+  }) 
   next();
 });
 
+// middlewear for adding routes
 app.use('/', indexRouter);
 app.use('/user',authChecker, usersRouter);
 app.use('/rankings', rankingsRouter);

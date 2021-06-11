@@ -5,12 +5,7 @@ const factorsFormatter = require('../utilities/formatters').formatFactors;
 router.get("/:year", (req, res) => {
   let yearPattern = /^\d{4}$/g
   let countryPattern = "[0-9]"
-  // if(Object.entries(req.query).length !== 0 && (!req.query.limit && !req.query.country)){
-  //   return res.status(400).json({
-  //     error:true,
-  //     message:`Invalid query parameters: ${Object.keys(req.query)}. Only year and country are permitted.`
-  //   })
-  // }
+
   let errorquery = Object.keys(req.query)
   const result = errorquery.filter(eq => eq !== "country" && eq !== "limit")
   if(result.length > 0){
@@ -19,13 +14,7 @@ router.get("/:year", (req, res) => {
       message:`Invalid query parameters: ${result}. Only year and country are permitted.`
     })
   }
-  // if(Object.entries(req.query).length > 2){
-    
-  //   return res.status(400).json({
-  //     error:true,
-  //     message:`Invalid query parameters: ${Object.keys(req.query)}. Only year and country are permitted.`
-  //   })
-  // }
+
   if(!req.params.year.match(yearPattern)){
     return res.status(400).json({
       "error": true,

@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const rankingFormatter = require("../utilities/formatters").formatRankings;
-const rankingQuery = require('../utilities/dbqueries').queryForRankings;
+// legacy functions before understand how to use knex properly
+// const rankingFormatter = require("../utilities/formatters").formatRankings;
+// const rankingQuery = require('../utilities/dbqueries').queryForRankings;
 
 router.get('/', (req, res) => {
   let pattern = "[0-9]"
@@ -54,14 +55,6 @@ router.get('/', (req, res) => {
       return res.status(200).send(rankings);
     })
   }
-
-  // req.db.from("rankings").select('rank', 'score', 'year', 'country').orderBy("year", "desc").then(rankings => {
-  //   return res.status(200).send(rankings);
-  // }).catch(err => {
-  //   if(err){
-  //     console.log(err);
-  //   }
-  // })
 });
 
 
